@@ -7,3 +7,5 @@ ADDED_DIR=${SCRIPT_DIR}/added
 # Add custom configuration file
 cp -p ${ADDED_DIR}/standalone-openshift.xml $JBOSS_HOME/standalone/configuration/
 cp -p ${ADDED_DIR}/launch/* $JBOSS_HOME/bin/launch/
+# removes the default embedded broker
+cp -p ${ADDED_DIR}/launch/messaging.sh $JBOSS_HOME/bin/launch/
