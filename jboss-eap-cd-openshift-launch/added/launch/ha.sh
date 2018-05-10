@@ -87,6 +87,8 @@ function configure_ha() {
   fi
 
   local ping_protocol=${JGROUPS_PING_PROTOCOL:-kubernetes.KUBE_PING}
+  # kubernetes.KUBE_PING is the default
+
   local ping_protocol_element="<protocol type=\"${ping_protocol}\" socket-binding=\"jgroups-mping\"/>"
   validate_ping_protocol "${ping_protocol}" 
 
