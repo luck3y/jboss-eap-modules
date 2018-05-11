@@ -4,6 +4,8 @@ source $JBOSS_HOME/bin/launch/logging.sh
 function prepareEnv() {
   unset OPENSHIFT_KUBE_PING_NAMESPACE
   unset OPENSHIFT_KUBE_PING_LABELS
+  unset KUBERNETES_LABELS
+  unset KUBERNETES_NAMESPACE
   unset OPENSHIFT_DNS_PING_SERVICE_NAME
   unset OPENSHIFT_DNS_PING_SERVICE_PORT
   unset JGROUPS_CLUSTER_PASSWORD
@@ -16,12 +18,12 @@ function configure() {
 }
 
 function check_view_pods_permission() {
-    if [ -n "${OPENSHIFT_KUBE_PING_NAMESPACE+_}" ]; then
+    if [ -n "${KUBERNETES_NAMESPACE+_}" ]; then
         local CA_CERT="/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
         local CURL_CERT_OPTION
-        pods_url="https://${KUBERNETES_SERVICE_HOST:-kubernetes.default.svc}:${KUBERNETES_SERVICE_PORT:-443}/api/${OPENSHIFT_KUBE_PING_API_VERSION:-v1}/namespaces/${OPENSHIFT_KUBE_PING_NAMESPACE}/pods"
-        if [ -n "${OPENSHIFT_KUBE_PING_LABELS}" ]; then
-            pods_labels="labels=${OPENSHIFT_KUBE_PING_LABELS}"
+        pods_url="https://${KUBERNETES_SERVICE_HOST:-kubernetes.default.svc}:${KUBERNETES_SERVICE_PORT:-443}/api/${OPENSHIFT_KUBE_PING_API_VERSION:-v1}/namespaces/${KUBERNETES_NAMESPACE}/pods"
+        if [ -n "${KUBERNETES_LABELS}" ]; then
+            pods_labels="labels=${KUBERNETES_LABELS}"
         else
             pods_labels=""
         fi
@@ -42,7 +44,7 @@ function check_view_pods_permission() {
             log_warning "Service account unable to test permissions to view pods in kubernetes (HTTP ${pods_code}). Clustering might be unavailable. Please refer to the documentation for configuration."
         fi
     else
-        log_warning "Environment variable OPENSHIFT_KUBE_PING_NAMESPACE undefined. Clustering will be unavailable. Please refer to the documentation for configuration."
+        log_warning "Environment variable KUBERNETES_NAMESPACE undefined. Clustering will be unavailable. Please refer to the documentation for configuration."
     fi
 }
 
@@ -53,20 +55,41 @@ function validate_dns_ping_settings() {
 }
 
 function validate_ping_protocol() {
-  if [ "$1" = "openshift.KUBE_PING" ]; then
-    # legacy version name, changed to kubernetes.KUBE_PING below
+  if [ "$1" = "kubernetes.KUBE_PING" ] || [ "$1" = "openshift.KUBE_PING" ]; then
     check_view_pods_permission
-  elif [ "$1" = "kubernetes.KUBE_PING" ]; then
-    check_view_pods_permission
-  elif [ "$1" = "openshift.DNS_PING" ]; then
+  elif [ "$1" = "dns.DNS_PING" ] || [ "$1" = "openshift.DNS_PING" ]; then
     validate_dns_ping_settings
   else
-    log_warning "Unknown protocol specified for JGroups discovery protocol: $1.  Expecting one of: kubernetes.KUBE_PING, openshift.KUBE_PING or openshift.DNS_PING."
+    log_warning "Unknown protocol specified for JGroups discovery protocol: $1.  Expecting one of: kubernetes.KUBE_PING, dns.DNS_PING, openshift.KUBE_PING or openshift.DNS_PING."
   fi
 }
 
 function configure_ha() {
   # Set HA args
+
+  log_info "XXX: OKPN: $OPENSHIFT_KUBE_PING_NAMESPACE OKPL: $OPENSHIFT_KUBE_PING_LABELS"
+  log_info "XXX: KN: $KUBERNETES_NAMESPACE KL: $KUBERNETES_LABELS"
+  # deprecation
+  if [ -n "$OPENSHIFT_KUBE_PING_NAMESPACE" ] && [ -z "$KUBERNETES_NAMESPACE"]; then
+    log_info "Setting KUBERNETES_NAMESPACE to $OPENSHIFT_KUBE_PING_NAMESPACE"
+    export KUBERNETES_NAMESPACE="$OPENSHIFT_KUBE_PING_NAMESPACE"
+    #unset OPENSHIFT_KUBE_PING_NAMESPACE
+  elif [ -n "$OPENSHIFT_KUBE_PING_NAMESPACE" ] && [ -n "$KUBERNETES_NAMESPACE"]; then
+    # use the KUBE one, drop the OS one, and warn the user
+    log_warning "Both OPENSHIFT_KUBE_PING_NAMESPACE and KUBERNETES_NAMESPACE set, ignoring OPENSHIFT_KUBE_PING_NAMESPACE"
+    #unset OPENSHIFT_KUBE_PING_NAMESPACE
+  fi
+
+  if [ -n "$OPENSHIFT_KUBE_PING_LABELS" ] && [ -z "$KUBERNETES_LABELS"]; then
+    log_info "Setting KUBERNETES_LABELS to $OPENSHIFT_KUBE_PING_LABELS"
+    export KUBERNETES_LABELS="$OPENSHIFT_KUBE_PING_LABELS"
+    #unset OPENSHIFT_KUBE_PING_LABELS
+  elif [ -n "$OPENSHIFT_KUBE_PING_LABELS" ] && [ -n "$KUBERNETES_LABELS"]; then
+    # use the KUBE one, drop the OS one, and warn the user
+    log_warning "Both OPENSHIFT_KUBE_PING_LABELS and KUBERNETES_LABELS set, ignoring OPENSHIFT_KUBE_PING_LABELS"
+    #unset OPENSHIFT_KUBE_PING_LABELS
+  fi
+
   IP_ADDR=`hostname -i`
   JBOSS_HA_ARGS="-b ${IP_ADDR} -bprivate ${IP_ADDR}"
 
@@ -87,13 +110,29 @@ function configure_ha() {
   fi
 
   local ping_protocol=${JGROUPS_PING_PROTOCOL:-kubernetes.KUBE_PING}
-  # kubernetes.KUBE_PING is the default
+  local ping_protocol_element
+  local selected_ping_protocol="$ping_protocol"
 
-  local ping_protocol_element="<protocol type=\"${ping_protocol}\" socket-binding=\"jgroups-mping\"/>"
-  validate_ping_protocol "${ping_protocol}" 
+  # compat with previous values
+  if [ "openshift.DNS_PING" = "$ping_protocol" ]; then
+    selected_ping_protocol="dns.DNS_PING"
+  elif [ "openshift.KUBE_PING" = "$ping_protocol" ]; then
+    selected_ping_protocol="kubernetes.KUBE_PING"
+  fi
 
+  log_info "XXX ping: $ping_protocol : spp: $selected_ping_protocol"
+  validate_ping_protocol "${selected_ping_protocol}"
+
+  if [ "$selected_ping_protocol" = "kubernetes.KUBE_PING" ]; then
+    ping_protocol_element="<protocol type=\"${selected_ping_protocol}\"/>"
+  elif [ "$selected_ping_protocol" = "dns.DNS_PING" ]; then
+    local svc_name="_$OPENSHIFT_DNS_PING_SERVICE_PORT._tcp.$OPENSHIFT_DNS_PING_SERVICE_NAME.$KUBERNETES_NAMESPACE"
+    ping_protocol_element="<protocol type=\"${selected_ping_protocol}\"><property name=\"dns_query\">$svcname</property><property name=\"dns_record_type\">SRV</property></protocol>"
+  fi
+
+  log_info "XXX: ping_pe: $ping_protocol_element"
   sed -i "s|<!-- ##JGROUPS_AUTH## -->|${JGROUPS_AUTH}|g" $CONFIG_FILE
-  log_info "Configuring JGroups discovery protocol to ${ping_protocol}"
+  log_info "Configuring JGroups discovery protocol to ${selected_ping_protocol}"
   sed -i "s|<!-- ##JGROUPS_PING_PROTOCOL## -->|${ping_protocol_element}|g" $CONFIG_FILE
 
 }
