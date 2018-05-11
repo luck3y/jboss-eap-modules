@@ -126,8 +126,9 @@ function configure_ha() {
   if [ "$selected_ping_protocol" = "kubernetes.KUBE_PING" ]; then
     ping_protocol_element="<protocol type=\"${selected_ping_protocol}\"/>"
   elif [ "$selected_ping_protocol" = "dns.DNS_PING" ]; then
-    local svc_name="_$OPENSHIFT_DNS_PING_SERVICE_PORT._tcp.$OPENSHIFT_DNS_PING_SERVICE_NAME.$KUBERNETES_NAMESPACE"
-    ping_protocol_element="<protocol type=\"${selected_ping_protocol}\"><property name=\"dns_query\">$svcname</property><property name=\"dns_record_type\">SRV</property></protocol>"
+    local svc_name="$OPENSHIFT_DNS_PING_SERVICE_PORT._tcp.$OPENSHIFT_DNS_PING_SERVICE_NAME"
+    ping_protocol_element="<protocol type=\"${selected_ping_protocol}\"><property name=\"dns_query\">${svc_name}</property><property name=\"dns_record_type\">SRV</property></protocol>"
+    log_info "PPE: ${ping_protocol_element}"
   fi
 
   log_info "XXX: ping_pe: $ping_protocol_element"
