@@ -23,7 +23,7 @@ teardown() {
   fi
 }
 
-@test "Unconfigured" {
+@test "Microprofile - Unconfigured" {
   run generate_microprofile_config_source
   [ "${output}" = "" ]
   [ "$status" -eq 0 ]
