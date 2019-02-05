@@ -9,5 +9,5 @@ execute:
 artifacts:
 - name: rh-sso-7.2.2-eap7-adapter.zip
   md5: bbe549c92511a04a10727b843eb0d2c5
-- path: rh-sso-7.2.2-saml-eap7-adapter.zip
+- name: rh-sso-7.2.2-saml-eap7-adapter.zip
   md5: 2b6b2fd869259bdb92961fa100e5a838
