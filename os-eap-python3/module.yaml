@@ -1,0 +1,9 @@
+schema_version: 1
+name: os-eap-python3
+version: '1.0'
+description: os-eap-python installer
+execute:
+- script: configure.sh
+packages:
+      install:
+          - python36
