@@ -1,0 +1,11 @@
+schema_version: 1
+name: os-eap-db-drivers
+version: '2.0'
+description: os-eap-db-drivers script package.
+execute:
+- script: configure.sh
+  user: '185'
+packages:
+      install:
+          - postgresql-jdbc
+          - mariadb-java-client
