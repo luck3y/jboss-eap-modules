@@ -1,4 +1,4 @@
-@jboss-eap-7
+@jboss-eap-7 @jboss-eap-7-tech-preview
 # JDK 11 images don't use hawkular
 Feature: OpenShift EAP Hawkular agent tests
 
@@ -113,7 +113,7 @@ Feature: OpenShift EAP Hawkular agent tests
       | AB_HAWKULAR_AGENT_CONFIG                 | /opt/jboss/container/hawkular-javaagent-config.yaml |
     Then container log should contain -javaagent:/opt/jboss/container/hawkular/hawkular-javaagent.jar=config=/opt/jboss/container/hawkular-javaagent-config.yaml,delay=10
 
-  @wip
+  @ignore @jboss-eap-7-tech-preview/eap-cd-openshift
   @jboss-eap-7-tech-preview/eap72-openjdk11-openshift
   Scenario: JDK11 images should log a warning if Hawkular is enabled, as it is not supported
     When container is started with env

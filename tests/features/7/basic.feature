@@ -1,4 +1,4 @@
-@jboss-eap-7
+@jboss-eap-7 @jboss-eap-7-tech-preview
 Feature: Common EAP tests
 
   Scenario: Check for add-user failures
@@ -43,6 +43,7 @@ Feature: Common EAP tests
     Then run java -version in container and check its output for openjdk version "1.8.0"
     Then run javac -version in container and check its output for javac 1.8.0
 
+  @ignore @jboss-eap-7-tech-preview/eap-cd-openshift
   @jboss-eap-7-tech-preview/eap72-openjdk11-openshift
   Scenario: Java 11 is installed and set as default one
     When container is ready
@@ -54,6 +55,7 @@ Feature: Common EAP tests
     Then run /opt/eap/bin/readinessProbe.sh in container once
     Then run /opt/eap/bin/livenessProbe.sh in container once
 
+  @ignore @jboss-eap-7-tech-preview/eap-cd-openshift
   # https://issues.jboss.org/browse/CLOUD-204
   Scenario: Check if kube ping protocol is used by default
     When container is ready
@@ -61,6 +63,7 @@ Feature: Common EAP tests
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 2 elements on XPath //*[local-name()='protocol'][@type='openshift.KUBE_PING']
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 0 elements on XPath //*[local-name()='protocol'][@type='openshift.DNS_PING']
 
+  @ignore @jboss-eap-7-tech-preview/eap-cd-openshift
   # https://issues.jboss.org/browse/CLOUD-1958
   Scenario: Check if kube ping protocol is used when specified
     When container is started with env
@@ -70,6 +73,7 @@ Feature: Common EAP tests
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 2 elements on XPath //*[local-name()='protocol'][@type='openshift.KUBE_PING']
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should have 0 elements on XPath //*[local-name()='protocol'][@type='openshift.DNS_PING']
 
+  @ignore @jboss-eap-7-tech-preview/eap-cd-openshift
   # https://issues.jboss.org/browse/CLOUD-1958
   Scenario: Check if dns ping protocol is used when specified
     When container is started with env
@@ -199,6 +203,8 @@ Feature: Common EAP tests
        | JGROUPS_PING_PROTOCOL                        | openshift.DNS_PING                      |
     Then container log should contain WARN The specified JGroups configuration properties (JGROUPS_ENCRYPT_SECRET, JGROUPS_ENCRYPT_NAME, JGROUPS_ENCRYPT_PASSWORD, JGROUPS_ENCRYPT_KEYSTORE_DIR JGROUPS_ENCRYPT_KEYSTORE) will be ignored when using JGROUPS_ENCRYPT_PROTOCOL=ASYM_ENCRYPT. Only JGROUPS_CLUSTER_PASSWORD is used.
 
+  # CD doesn't have these any more
+  @ignore @jboss-eap-7-tech-preview/eap-cd-openshift
   Scenario: No duplicate module jars
     When container is ready
     Then files at /opt/eap/modules/system/layers/openshift/org/jgroups/main should have count of 2
