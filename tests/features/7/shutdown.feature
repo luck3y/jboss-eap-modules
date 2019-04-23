@@ -34,6 +34,7 @@ Feature: Openshift EAP shutdown tests
     And container log should contain WFLYSRV0241
     And container log should contain WFLYSRV0050
 
+  @wip
   Scenario: Check if image shuts down with TERM signal when split
     When container is started with env
        | variable                  | value           |
@@ -43,6 +44,7 @@ Feature: Openshift EAP shutdown tests
     And container log should contain received TERM signal
     And container log should contain WFLYSRV0050
 
+  @wip
   Scenario: Check if image does not shutdown with TERM signal when CLI_GRACEFUL_SHUTDOWN is set when split
     When container is started with env
        | variable                  | value           |
@@ -53,6 +55,7 @@ Feature: Openshift EAP shutdown tests
     And container log should not contain received TERM signal
     And container log should not contain WFLYSRV0050
 
+  @wip
   Scenario: Check if image shuts down with cli when CLI_GRACEFUL_SHUTDOWN is set when split
     When container is started with env
        | variable                  | value           |
@@ -63,6 +66,7 @@ Feature: Openshift EAP shutdown tests
     And container log should not contain received TERM signal
     And container log should contain WFLYSRV0050
 
+  @wip
   Scenario: Check if image shuts down cleanly with TERM signal when split
     When container is started with env
        | variable                  | value           |

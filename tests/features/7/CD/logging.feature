@@ -8,6 +8,7 @@ Feature: Check logging configuration
     Then container log should contain "message":"WFLYSRV0025: JBoss EAP CD 7.3.0.CD
     And XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value OPENSHIFT on XPath //*[local-name()='console-handler']/*[local-name()='formatter']/*[local-name()='named-formatter']/@name
 
+  @wip
   Scenario: Check that EAP7 logs are normally formatted
     When container is started with env
        | variable                    | value              |

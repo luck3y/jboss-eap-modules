@@ -239,6 +239,7 @@ Feature: EAP Openshift datasources
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value osTestStoreNodeName on XPath //*[local-name()='jdbc-store']/*[local-name()='communication']/@table-prefix
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value osTestStoreNodeName on XPath //*[local-name()='jdbc-store']/*[local-name()='state']/@table-prefix
 
+  @wip
   @redhat-sso-7/sso71-openshift
   Scenario: Test postgresql xa datasource extension with TX_DATABASE_PREFIX_MAPPING
     When container is started with env
@@ -292,6 +293,7 @@ Feature: EAP Openshift datasources
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value osTestStoreNodeName on XPath //*[local-name()='jdbc-store']/*[local-name()='communication']/@table-prefix
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value osTestStoreNodeName on XPath //*[local-name()='jdbc-store']/*[local-name()='state']/@table-prefix
 
+  @wip
   @redhat-sso-7/sso71-openshift
   Scenario: Test postgresql xa datasource extension with TX_DATABASE_PREFIX_MAPPING and hyphenated node name
     When container is started with env
@@ -533,6 +535,7 @@ Feature: EAP Openshift datasources
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value mysqluser on XPath //*[local-name()='xa-datasource']/*[local-name()='security']/*[local-name()='user-name']
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value mysqlpass on XPath //*[local-name()='xa-datasource']/*[local-name()='security']/*[local-name()='password']
 
+  @wip
   Scenario: Test tx db service mapping w/multiple datasources
     When container is started with env
        | variable                      | value                                      |
@@ -556,6 +559,7 @@ Feature: EAP Openshift datasources
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value mysqluser on XPath //*[local-name()='datasource']/*[local-name()='security']/*[local-name()='user-name']
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value mysqlpass on XPath //*[local-name()='datasource']/*[local-name()='security']/*[local-name()='password']
 
+  @wip
   Scenario: Test tx db service mapping w/multiple datasources and tx is first
     When container is started with env
        | variable                      | value                                      |
