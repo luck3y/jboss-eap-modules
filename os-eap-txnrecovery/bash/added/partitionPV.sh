@@ -343,7 +343,7 @@ function recoveryPodsGarbageCollection() {
   if $IS_TX_SQL_BACKEND; then
     # jdbc
     local recoveryMarkers=($(${JDBC_COMMAND_RECOVERY_MARKER} select_recovery))
-    for recoveryPod in ${recoveryMarkers[@]}; do
+    for recoveryPod in "${recoveryMarkers[@]}"; do
       if ! arrContains ${recoveryPod} "${livingPods[@]}"; then
         # recovery pod is dead, garbage collecting
         ${JDBC_COMMAND_RECOVERY_MARKER} delete -r ${recoveryPod}
