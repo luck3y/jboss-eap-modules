@@ -1,6 +1,7 @@
 @jboss-eap-7
 Feature: EAP Openshift datasources
 
+  @wip
   Scenario: check mysql datasource
     When container is started with env
        | variable                  | value            |
@@ -11,6 +12,7 @@ Feature: EAP Openshift datasources
        | TEST_MYSQL_SERVICE_HOST   | 10.1.1.1         |
        | TEST_MYSQL_SERVICE_PORT   | 3306             |
        | TIMER_SERVICE_DATA_STORE  | test-mysql       |
+       | JDBC_SKIP_RECOVERY        | true             |
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java:jboss/datasources/test_mysql on XPath //*[local-name()='xa-datasource']/@jndi-name
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value test_mysql-TEST on XPath //*[local-name()='xa-datasource']/@pool-name
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value 10.1.1.1 on XPath //*[local-name()='xa-datasource-property'][@name="ServerName"]
@@ -36,6 +38,7 @@ Feature: EAP Openshift datasources
        | TEST_TX_ISOLATION         | TRANSACTION_REPEATABLE_READ |
        | TEST_MYSQL_SERVICE_HOST   | 10.1.1.1                    |
        | TEST_MYSQL_SERVICE_PORT   | 3306                        |
+       | JDBC_SKIP_RECOVERY        | true                        |
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java:jboss/datasources/test_mysql on XPath //*[local-name()='xa-datasource']/@jndi-name
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value test_mysql-TEST on XPath //*[local-name()='xa-datasource']/@pool-name
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value 10.1.1.1 on XPath //*[local-name()='xa-datasource']/*[local-name()='xa-datasource-property'][@name="ServerName"]
@@ -57,6 +60,7 @@ Feature: EAP Openshift datasources
        | TEST_MAX_POOL_SIZE        | 10                          |
        | TEST_MYSQL_SERVICE_HOST   | 10.1.1.1                    |
        | TEST_MYSQL_SERVICE_PORT   | 3306                        |
+       | JDBC_SKIP_RECOVERY        | true                        |
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java:jboss/datasources/test_mysql on XPath //*[local-name()='xa-datasource']/@jndi-name
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value test_mysql-TEST on XPath //*[local-name()='xa-datasource']/@pool-name
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value 10.1.1.1 on XPath //*[local-name()='xa-datasource']/*[local-name()='xa-datasource-property'][@name="ServerName"]
@@ -82,6 +86,7 @@ Feature: EAP Openshift datasources
        | TEST_POSTGRESQL_SERVICE_HOST  | 10.1.1.1                   |
        | TEST_POSTGRESQL_SERVICE_PORT  | 5432                       |
        | TIMER_SERVICE_DATA_STORE      | test-postgresql            |
+       | JDBC_SKIP_RECOVERY            | true                       |
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java:jboss/datasources/test_postgresql on XPath //*[local-name()='xa-datasource']/@jndi-name
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value test_postgresql-TEST on XPath //*[local-name()='xa-datasource']/@pool-name
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value 10.1.1.1 on XPath //*[local-name()='xa-datasource']/*[local-name()='xa-datasource-property'][@name="ServerName"]
@@ -107,6 +112,7 @@ Feature: EAP Openshift datasources
        | TEST_TX_ISOLATION             | TRANSACTION_REPEATABLE_READ |
        | TEST_POSTGRESQL_SERVICE_HOST  | 10.1.1.1                    |
        | TEST_POSTGRESQL_SERVICE_PORT  | 5432                        |
+       | JDBC_SKIP_RECOVERY            | true                        |
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java:jboss/datasources/test_postgresql on XPath //*[local-name()='xa-datasource']/@jndi-name
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value test_postgresql-TEST on XPath //*[local-name()='xa-datasource']/@pool-name
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value 10.1.1.1 on XPath //*[local-name()='xa-datasource']/*[local-name()='xa-datasource-property'][@name="ServerName"]
@@ -127,6 +133,7 @@ Feature: EAP Openshift datasources
       | TEST_PASSWORD                    | hardtoguess                   |
       | EAP_APP_POSTGRESQL_SERVICE_HOST  | 10.1.1.1                      |
       | EAP_APP_POSTGRESQL_SERVICE_PORT  | 5432                          |
+      | JDBC_SKIP_RECOVERY               | true                          |
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java:jboss/datasources/eap_app_postgresql on XPath //*[local-name()='xa-datasource']/@jndi-name
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value eap_app_postgresql-TEST on XPath //*[local-name()='xa-datasource']/@pool-name
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value 10.1.1.1 on XPath //*[local-name()='xa-datasource']/*[local-name()='xa-datasource-property'][@name="ServerName"]
@@ -149,6 +156,7 @@ Feature: EAP Openshift datasources
        | TEST_POSTGRESQL_PASSWORD      | hardtoguess-p                                          |
        | TEST_POSTGRESQL_SERVICE_HOST  | 10.1.1.2                                               |
        | TEST_POSTGRESQL_SERVICE_PORT  | 5432                                                   |
+       | JDBC_SKIP_RECOVERY            | true                                                   |
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value java:jboss/datasources/test_postgresql on XPath //*[local-name()='xa-datasource']/@jndi-name
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value test_postgresql-TEST_POSTGRESQL on XPath //*[local-name()='xa-datasource']/@pool-name
     Then XML file /opt/eap/standalone/configuration/standalone-openshift.xml should contain value 10.1.1.1 on XPath //*[local-name()='xa-datasource']/*[local-name()='xa-datasource-property'][@name="ServerName"]
