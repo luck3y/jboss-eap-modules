@@ -12,8 +12,8 @@ ERROR=/tmp/liveness-error
 LOG=/tmp/liveness-log
 
 # liveness failure before management interface is up will cause the probe to fail
-COUNT=30
-SLEEP=5
+COUNT=1
+SLEEP=0
 DEBUG_SCRIPT=false
 PROBE_IMPL="probe.eap.dmr.EapProbe probe.eap.dmr.HealthCheckProbe"
 
@@ -32,10 +32,6 @@ fi
 if [ $# -gt 3 ] ; then
     PROBE_IMPL=$4
 fi
-
-# Sleep for 5 seconds to avoid launching readiness and liveness probes
-# at the same time
-sleep 5
 
 if [ "$DEBUG_SCRIPT" = "true" ]; then
     DEBUG_OPTIONS="--debug --logfile $LOG --loglevel DEBUG"

@@ -6,8 +6,8 @@ OUTPUT=/tmp/readiness-output
 ERROR=/tmp/readiness-error
 LOG=/tmp/readiness-log
 
-COUNT=30
-SLEEP=5
+COUNT=1
+SLEEP=0
 DEBUG=${SCRIPT_DEBUG:-false}
 PROBE_IMPL="probe.eap.dmr.EapProbe probe.eap.dmr.HealthCheckProbe"
 
