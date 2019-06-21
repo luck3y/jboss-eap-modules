@@ -68,3 +68,13 @@ Feature: Common EAP CD tests
   Scenario: No duplicate module jars
     When container is ready
     Then file at /opt/eap/modules/system/layers/openshift/org/jgroups/main should not exist
+
+  @wip
+  Scenario: Run custom setup in image before launch
+    When container is started with command bash
+      Then run java -version in container and check its output for openjdk version "11.0.
+      Then run ls -d /tmp in container and check its output contains /tmp
+      Then run script -c /opt/eap/bin/openshift-launch.sh /tmp/boot.log in container and detach
+      Then run ls -l /tmp in container and check its output contains boot.log
+      Then file /tmp/boot.log should contain JGroups
+      Then file /tmp/boot.log should not contain SHAZAM
