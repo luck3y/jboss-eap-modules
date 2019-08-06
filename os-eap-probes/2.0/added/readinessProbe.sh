@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 . "$JBOSS_HOME/bin/probe_common.sh"
 
