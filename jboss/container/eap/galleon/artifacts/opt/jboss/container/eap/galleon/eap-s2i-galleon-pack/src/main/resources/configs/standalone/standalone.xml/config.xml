@@ -26,21 +26,6 @@
     <!-- jgroups -->
     <feature-group name="os-jgroups"/>
 
-    <!-- mod-cluster -->
-    <!-- required by modcluster -->
-    <feature spec="subsystem.undertow">
-        <feature spec="subsystem.undertow.server">
-            <param name="server" value="default-server"/>
-            <feature spec="subsystem.undertow.server.ajp-listener">
-                <param name="ajp-listener" value="ajp"/>
-                <param name="socket-binding" value="ajp"/>
-                <unset param="worker"/>
-                <unset param="buffer-pool"/>
-            </feature>
-        </feature>
-    </feature>
-    <feature-group name="modcluster"/>
-
     <!-- messaging -->
     <feature spec="subsystem.messaging-activemq"/>
     <feature-group name="os-messaging"/>
@@ -115,6 +100,7 @@
 
     <!-- undertow -->
     <exclude feature-id="subsystem.undertow.server.https-listener:server=default-server,https-listener=https"/>
+    <exclude feature-id="subsystem.undertow.server.socket-binding-group.socket-binding:socket-binding-group=standard-sockets,socket-binding=ajp"/>
 
     <!-- web-services -->
     <feature spec="subsystem.webservices">
@@ -130,6 +116,7 @@
         <feature-group name="ha-sockets">
             <exclude feature-id="socket-binding-group.socket-binding:name=standard-sockets,socket-binding=jgroups-udp-fd"/>
             <exclude feature-id="socket-binding-group.socket-binding:name=standard-sockets,socket-binding=jgroups-tcp-fd"/>
+            <exclude feature-id="socket-binding-group.socket-binding:name=standard-sockets,socket-binding=modcluster"/>
         </feature-group>
     </feature>
     <feature-group name="os-undertow"/>
