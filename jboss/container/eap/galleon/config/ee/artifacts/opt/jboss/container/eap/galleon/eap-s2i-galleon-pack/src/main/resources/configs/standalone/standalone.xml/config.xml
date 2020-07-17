@@ -73,6 +73,7 @@
         <param name="wsdl-host" value="jbossws.undefined.host"/>
     </feature>
 
+    <exclude feature-id="socket-binding-group:name=standard-sockets,socket-binding=modcluster"/>
     <feature-group name="os-socket"/>
 
     <feature-group name="os-undertow"/>
