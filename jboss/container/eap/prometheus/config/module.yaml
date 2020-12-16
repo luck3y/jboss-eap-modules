@@ -9,5 +9,6 @@ execute:
 
 modules:
   install:
-  - name: jboss.container.prometheus.bash
+  - name: jboss.container.prometheus
+    version: '7'
   - name: jboss.container.eap.prometheus.jmx-exporter-config
