@@ -53,6 +53,7 @@ Feature: Common EAP tests
   @wip
   Scenario: readinessProbe runs successfully
     When container is ready
+    Then container log should contain WFLYSRV0025
     Then run /opt/eap/bin/readinessProbe.sh in container once
     Then run /opt/eap/bin/livenessProbe.sh in container once
 
