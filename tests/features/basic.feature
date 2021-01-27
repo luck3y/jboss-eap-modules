@@ -50,7 +50,6 @@ Feature: Common EAP tests
     Then run java -version in container and check its output for openjdk version "11.0.
     Then run javac -version in container and check its output for javac 11.0.
 
-  @wip
   Scenario: readinessProbe runs successfully
     When container is ready
     Then container log should contain WFLYSRV0025
@@ -312,7 +311,6 @@ Feature: Common EAP tests
     When container is ready
     Then file at /opt/eap/modules/system/layers/openshift/org/jgroups/main should not exist
  
- @wip
  Scenario: readinessProbe runs successfully on cloud-server trimmed server
    Given s2i build git://github.com/openshift/openshift-jee-sample from . with env and true using master
     | variable                        | value                                                                                  |
