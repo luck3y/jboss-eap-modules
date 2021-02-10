@@ -1,3 +1,4 @@
+@wip
 @jboss-eap-7 @jboss-eap-7-tech-preview
 Feature: Common EAP tests
 
